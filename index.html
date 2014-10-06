@@ -1,0 +1,45 @@
+<!-- 
+BULLET HELL GAME
+By: Changbai, JJ, Mike, Elbin
+-->
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Bullet Hell Game</title>
+	<style>
+      body { background-color: #000000; color:#FFF; }
+      canvas { background-color: #222222; }
+    </style>
+  </head>
+  <body onload="init();">
+  
+	 <div align="center">
+	    <!--Our canvas, id='game-canvas'-->
+		<h1>Bullet Hell Game</h1>
+		<canvas id="game-canvas" width="512" height="384"></canvas>
+	 </div>
+	 
+	 <!--Call to pixi.js library-->
+	 <script src="pixi.js-master/bin/pixi.dev.js"></script>
+	 
+	 <script>
+		<!--Initial Method Called-->
+		function init() {
+			console.log("init() successfully called.");
+			var width = document.getElementById("game-canvas").width;
+			var height = document.getElementById("game-canvas").height;
+			stage = new PIXI.Stage(0xFF00CC);
+			renderer = PIXI.autoDetectRenderer(
+			width,
+			height,
+			document.getElementById("game-canvas")
+			);
+			
+			<!-- Render what was just instantiated-->
+			renderer.render(stage);
+		}
+	 </script>
+	 
+  </body>
+</html>
