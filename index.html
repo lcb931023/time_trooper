@@ -36,9 +36,22 @@ By: Changbai, JJ, Mike, Elbin
 			document.getElementById("game-canvas")
 			);
 			
-			<!-- Render what was just instantiated-->
-			renderer.render(stage);
+			var playerPicture = PIXI.Texture.fromImage("pics/player.png");
+			
+			player = new PIXI.Sprite(playerPicture, 100);
+			player.position.x = width/2;
+			player.position.y = height/2;
+			stage.addChild(player);
+			
+			
+			<!-- Render what was just instantiated--> 
+            draw();
 		}
+         
+         function draw() {
+            renderer.render(stage);
+            requestAnimationFrame(draw);
+         }
 	 </script>
 	 
   </body>
