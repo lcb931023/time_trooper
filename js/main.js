@@ -23,18 +23,21 @@ function init() {
 	
 	bullets = [];
  	FIRE_RATE = 10; // [TODO]
-	for(var i=0; i < 15; i++){
+	for(var i=0; i < 10; i++){
     bullets.push(new Bullet());
     bullets[i].position.x = (Math.random()*2000) + 1000;
     bullets[i].position.y = (Math.random()*500) + 30;
     stage.addChild(bullets[i]);
   }
 	
-	// Setup Events
+	// Events
 	stage.mousedown = stage.touchstart = function()
 	{
 		player.jump();
 	}
+	// Time manipulation
+	timeMod = 1; // manipulate time
+	KeyboardJS.on('shift', function(){ timeMod = 0.6; }, function(){ timeMod = 1; });
 	
 }
 
@@ -42,7 +45,6 @@ function init() {
 var time;
 var now;
 var dt;
-var timeMod = 1; // manipulate time
 function draw() {
 	requestAnimationFrame(draw);
 
@@ -53,7 +55,7 @@ function draw() {
 	// manipulate time
 	var moddedTime = dt * timeMod;
 	// update elements
-	player.update( moddedTime );
+	player.update( dt );
 	for(var i=0; i < bullets.length; i++){
 		bullets[i].update( moddedTime );
 	}

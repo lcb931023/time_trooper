@@ -12,7 +12,7 @@ var PlayerState = {
 };
 
 function Player() {
-	var texture = PIXI.Texture.fromImage("pics/player.png");
+	var texture = PIXI.Texture.fromImage("pics/avatar-idle.png");
 	PIXI.Sprite.call(this, texture);
 	
 	this.anchor.x = 0.5;
@@ -35,12 +35,10 @@ Player.prototype.update = function(pDt) {
   switch( this.state ) {
 		case PlayerState.IDLE: {
 			// Do something... or not
-			console.log("idle");
 			break;
 		}
 		case PlayerState.JUMP: {
 			this.updateJump(pDt);
-			console.log("jump");
 			break;
 		}
 	}
