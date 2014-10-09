@@ -1,6 +1,7 @@
 /*** Initial Method Called ***/
 function init() {
 	console.log("init() successfully called.");
+	// Setup canvas
 	var width = document.getElementById("game-canvas").width;
 	var height = document.getElementById("game-canvas").height;
 	stage = new PIXI.Stage(0xFF00CC);
@@ -13,11 +14,18 @@ function init() {
 	/*** Start updating through draw loop ***/
 	requestAnimationFrame(draw);
 
+	// Setup elements
 	player = new Player();
 	player.position.x = 250;
-	player.position.y = 400;
+	player.position.y = GAME_CONSTANTS.groundHeight;
+	console.log(player);
 	stage.addChild(player);
-
+	
+	// Setup Events
+	stage.mousedown = stage.touchstart = function()
+	{
+		player.jump();
+	}
 }
 
 // Use dt to update animation correctly 
