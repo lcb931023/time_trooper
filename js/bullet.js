@@ -6,6 +6,8 @@ function Bullet() {
 	this.anchor.y = 0.5;
   this.rotation = Math.PI;
 	this.dx = - (Math.random() * .2 + .2);
+	this.position.x = (Math.random()*2000) + 1000;
+  this.position.y = (Math.random() * (GAME_CONSTANTS.groundHeight - 30) ) + 30;
 }
 
 Bullet.constructor = Bullet;
@@ -15,6 +17,6 @@ Bullet.prototype.update = function(pDt) {
 	this.position.x += this.dx * pDt;
 	if(this.position.x < -30){
 		this.position.x = 1000;
-		this.position.y = (Math.random()*500) + 30;
+		this.position.y = (Math.random() * (GAME_CONSTANTS.groundHeight - 30) ) + 30;
 	}
 };

@@ -14,7 +14,7 @@ function init() {
 	/*** Start updating through draw loop ***/
 	requestAnimationFrame(draw);
 
-	// Setup elements
+	/** Setup elements **/
 	player = new Player();
 	player.position.x = 250;
 	player.position.y = GAME_CONSTANTS.groundHeight;
@@ -25,21 +25,20 @@ function init() {
  	FIRE_RATE = 10; // [TODO]
 	for(var i=0; i < 10; i++){
     bullets.push(new Bullet());
-    bullets[i].position.x = (Math.random()*2000) + 1000;
-    bullets[i].position.y = (Math.random()*500) + 30;
     stage.addChild(bullets[i]);
   }
 	
-	// Events
+	/** Events **/
+	// Jump
 	KeyboardJS.on('spacebar', function() {
 		player.jump();
-		return false;
+		return false; // prevent default (scrolling)
+	}, function() {
+		console.log("up");
+		player.jumpReleased();
 	});
-	stage.mousedown = stage.touchstart = function()
-	{
-		player.jump();
-		return false;
-	}
+	stage.mousedown = stage.touchstart = function() { player.jump(); }
+	stage.mouseup = stage.touchend = function() { player.jumpReleased(); }
 	// Time manipulation
 	timeMod = 1;
 	slowMod = 0.5;
@@ -57,7 +56,7 @@ function draw() {
 	requestAnimationFrame(draw);
 
 	// update dt
-	now = new Date().getTime();
+	now = new Date().getTime(); // ms
 	dt = now - (time||now); // in case first time
 	time = now;
 	// manipulate time
