@@ -23,7 +23,7 @@ function init() {
 	
 	bullets = [];
  	FIRE_RATE = 10; // [TODO]
-	for(var i=0; i < 10; i++){
+	for(var i=0; i < GAME_CONSTANTS.bulletAmount; i++){
     bullets.push(new Bullet());
     stage.addChild(bullets[i]);
   }
