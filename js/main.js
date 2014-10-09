@@ -9,18 +9,30 @@ function init() {
 		height,
 		document.getElementById("game-canvas")
 	);
+	
+	/*** Start updating through draw loop ***/
+	requestAnimationFrame(draw);
 
 	player = new Player();
-	player.position.x = width/2;
-	player.position.y = height/2;
+	player.position.x = 250;
+	player.position.y = 400;
 	stage.addChild(player);
 
-
-	/*** Start updating through draw loop ***/
-	draw();
 }
 
+// Use dt to update animation correctly 
+var time;
+var now;
+var dt;
 function draw() {
-	renderer.render(stage);
 	requestAnimationFrame(draw);
+
+	// update dt
+	now = new Date().getTime();
+	dt = now - (time||now); // in case first time
+	time = now;
+	// update elements
+	player.update(dt);
+
+	renderer.render(stage);
 }

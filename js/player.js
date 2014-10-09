@@ -8,3 +8,8 @@ function Player() {
 
 Player.constructor = Player;
 Player.prototype = Object.create(PIXI.Sprite.prototype);
+
+Player.prototype.update = function(pDt) {
+  this.rotation += 0.01 * pDt;
+};
+ 
