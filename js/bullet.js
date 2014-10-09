@@ -15,5 +15,6 @@ Bullet.prototype.update = function(pDt) {
 	this.position.x += this.dx * pDt;
 	if(this.position.x < -30){
 		this.position.x = 1000;
+		this.position.y = (Math.random()*500) + 30;
 	}
 };

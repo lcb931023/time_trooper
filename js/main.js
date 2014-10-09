@@ -31,13 +31,21 @@ function init() {
   }
 	
 	// Events
+	KeyboardJS.on('spacebar', function() {
+		player.jump();
+		return false;
+	});
 	stage.mousedown = stage.touchstart = function()
 	{
 		player.jump();
+		return false;
 	}
 	// Time manipulation
-	timeMod = 1; // manipulate time
-	KeyboardJS.on('shift', function(){ timeMod = 0.6; }, function(){ timeMod = 1; });
+	timeMod = 1;
+	slowMod = 0.5;
+	fastMod = 2;
+	KeyboardJS.on('shift', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
+	KeyboardJS.on('ctrl', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 	
 }
 
