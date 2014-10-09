@@ -28,6 +28,13 @@ function init() {
     stage.addChild(bullets[i]);
   }
 	
+	hitCounter = document.createElement('span');
+	document.body.appendChild( hitCounter );
+	hitCount = 0;
+	hitCounter.innerHTML = hitCount + " hits!"
+	hitCounter.style.position = 'fixed';
+	hitCounter.style.top = '0px';
+	
 	/** Events **/
 	// Jump
 	KeyboardJS.on('spacebar', function() {
@@ -65,6 +72,15 @@ function draw() {
 	player.update( dt );
 	for(var i=0; i < bullets.length; i++){
 		bullets[i].update( moddedTime );
+		// Hit detection
+		if (
+			( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
+			( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 /*anchor*/)) < (bullets[i].height + player.height * 0.8) / 2 ) 
+		) {
+			bullets[i].respawn();
+			hitCount ++;
+			hitCounter.innerHTML = hitCount + " hits!"
+		}
 	}
 	
 	renderer.render(stage);
