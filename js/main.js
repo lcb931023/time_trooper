@@ -14,28 +14,25 @@ function init() {
 	/*** Start updating through draw loop ***/
 	requestAnimationFrame(draw);
     
-    /** PARALLAX **/
-     var farTexture = PIXI.Texture.fromImage("pics/bg-far.png");	
-     far = new PIXI.TilingSprite(farTexture, 960, 560);
-     far.position.x = 0;
-     far.position.y = 0;
-     far.tilePosition.x = 0;
-     far.tilePosition.y = 20;
-     stage.addChild(far);
+  /** PARALLAX **/
+	far = new ScrollingTile("pics/bg-far.png", -0.04);
+	far.position.x = 0;
+	far.position.y = 0;
+	far.tilePosition.x = 0;
+	far.tilePosition.y = 20;
+	stage.addChild(far);
 
-     var midTexture = PIXI.Texture.fromImage("pics/bg-mid.png");
-     mid = new PIXI.TilingSprite(midTexture, 960, 560);
-     mid.position.x = 0;
-     mid.position.y = 120;
-     mid.tilePosition.x = 0;
-     mid.tilePosition.y = 0;
-     stage.addChild(mid);
+  mid = new ScrollingTile("pics/bg-mid.png", -0.1);
+  mid.position.x = 0;
+  mid.position.y = 120;
+  mid.tilePosition.x = 0;
+  mid.tilePosition.y = 0;
+  stage.addChild(mid);
 
 	/** Setup elements **/
 	player = new Player();
 	player.position.x = 250;
 	player.position.y = GAME_CONSTANTS.groundHeight;
-	console.log(player);
 	stage.addChild(player);
 	
 	bullets = [];
@@ -58,7 +55,6 @@ function init() {
 		player.jump();
 		return false; // prevent default (scrolling)
 	}, function() {
-		console.log("up");
 		player.jumpReleased();
 	});
 	stage.mousedown = stage.touchstart = function() { player.jump(); }
@@ -89,7 +85,7 @@ function draw() {
 	player.update( dt );
 	for(var i=0; i < bullets.length; i++){
 		bullets[i].update( moddedTime );
-		// Hit detection
+		// Hit detection. [TODO] This looks ugly. Refactor
 		if (
 			( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
 			( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 /*anchor*/)) < (bullets[i].height + player.height * 0.8) / 2 ) 
@@ -99,10 +95,10 @@ function draw() {
 			hitCounter.innerHTML = hitCount + " hits!"
 		}
 	}
-    
-     //parallax
-    far.tilePosition.x += 0.4;
-    mid.tilePosition.x -= 0.3 * dt;
+	//parallax
+	far.update(dt);
+	mid.update(dt);
+	
 	
 	renderer.render(stage);
 }
