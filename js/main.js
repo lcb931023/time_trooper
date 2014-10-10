@@ -13,6 +13,23 @@ function init() {
 	
 	/*** Start updating through draw loop ***/
 	requestAnimationFrame(draw);
+    
+    /** PARALLAX **/
+     var farTexture = PIXI.Texture.fromImage("pics/bg-far.png");	
+     far = new PIXI.TilingSprite(farTexture, 960, 560);
+     far.position.x = 0;
+     far.position.y = 0;
+     far.tilePosition.x = 0;
+     far.tilePosition.y = 20;
+     stage.addChild(far);
+
+     var midTexture = PIXI.Texture.fromImage("pics/bg-mid.png");
+     mid = new PIXI.TilingSprite(midTexture, 960, 560);
+     mid.position.x = 0;
+     mid.position.y = 120;
+     mid.tilePosition.x = 0;
+     mid.tilePosition.y = 0;
+     stage.addChild(mid);
 
 	/** Setup elements **/
 	player = new Player();
@@ -82,6 +99,10 @@ function draw() {
 			hitCounter.innerHTML = hitCount + " hits!"
 		}
 	}
+    
+     //parallax
+    far.tilePosition.x += 0.4;
+    mid.tilePosition.x -= 0.3 * dt;
 	
 	renderer.render(stage);
 }
