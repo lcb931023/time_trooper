@@ -27,6 +27,8 @@ function Player() {
 	// Consts
 	this.JUMP_SPEED = -0.6;
 	this.JUMP_TIMER_MAX = 150; //ms. For variable jump height
+	this.DROP_SPEED = 0.006;
+	this.dropping = false;
 	// Properties
 	this.dY = 0;
 	this.jumpTimer = this.JUMP_TIMER_MAX; // For variable jump height
@@ -54,6 +56,7 @@ Player.prototype.update = function(pDt) {
 Player.prototype.updateJump = function(pDt) {
 	// always apply gravity when jumping
 	this.dY += GAME_CONSTANTS.gravity * pDt;
+	if (this.dropping) this.dY += this.DROP_SPEED * pDt;
 	// if still hasn't released, keep accelerating
 	if (this.jumpTimer < this.JUMP_TIMER_MAX) {
 		this.jumpTimer += pDt;
@@ -65,6 +68,7 @@ Player.prototype.updateJump = function(pDt) {
 	if ( this.position.y >= GAME_CONSTANTS.groundHeight ) {
 		this.position.y = GAME_CONSTANTS.groundHeight;
 		this.dY = 0;
+		this.dropping = false;
 		this.state = PlayerState.IDLE;
 		this.gotoAndStop(PlayerState.IDLE);
 	}
@@ -84,16 +88,14 @@ Player.prototype.upReleased = function() {
 };
 
 Player.prototype.down = function() {
-	console.log("Slide");
 	if (this.state == PlayerState.JUMP) {
-		
+		this.dropping = true;
 	} else if (this.state == PlayerState.IDLE) {
 		this.state = PlayerState.SLIDE;
 		this.gotoAndStop(PlayerState.SLIDE);
 	}
 };
 Player.prototype.downReleased = function() {
-	console.log("SlideReleased");
 	if (this.state == PlayerState.SLIDE) {
 		this.state = PlayerState.IDLE;
 		this.gotoAndStop(PlayerState.IDLE);
