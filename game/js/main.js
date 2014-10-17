@@ -21,7 +21,9 @@ function init() {
 	// Setup canvas
 	var width = document.getElementById("game-canvas").width;
 	var height = document.getElementById("game-canvas").height;
-	stage = new PIXI.Stage(0x18428B);
+	stage = new PIXI.Stage("black");
+    stage.addChild( new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png")));
+    
 	renderer = PIXI.autoDetectRenderer(
 		width,
 		height,
@@ -36,12 +38,12 @@ function init() {
 	far.position.x = 0;
 	far.position.y = 0;
 	far.tilePosition.x = 0;
-	far.tilePosition.y = 20;
+	far.tilePosition.y = 0;
 	stage.addChild(far);
 
     mid = new ScrollingTile("pics/bg-mid.png", -0.1);
     mid.position.x = 0;
-    mid.position.y = 120;
+    mid.position.y = 0;
     mid.tilePosition.x = 0;
     mid.tilePosition.y = 0;
     stage.addChild(mid);
@@ -60,11 +62,11 @@ function init() {
         playText.anchor.y = 0.5;
         scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
         scoreText.position.x = 30;
-        scoreText.position.y = 505;
+        scoreText.position.y = 20;
         scoreText.visible = false;
         highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
         highScoreText.position.x = 700;
-        highScoreText.position.y = 505;
+        highScoreText.position.y = 20;
         highScoreText.visible = false;
     stage.addChild(gameTitle);
     stage.addChild(playText);
@@ -147,7 +149,7 @@ function draw() {
 							scoreText.visible = false;
 							scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
 							scoreText.position.x = 30;
-							scoreText.position.y = 505;
+							scoreText.position.y = 20;
 							stage.addChild(scoreText);
 							scoreText.visible = true;
 			}
@@ -161,7 +163,7 @@ function draw() {
 		score = Math.ceil(score);
 		scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
 		scoreText.position.x = 30;
-		scoreText.position.y = 505;
+		scoreText.position.y = 20;
 		stage.addChild(scoreText);
 		scoreText.visible = true;
 
@@ -170,7 +172,7 @@ function draw() {
 			highScore = score;
 			highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
 			highScoreText.position.x = 700;
-			highScoreText.position.y = 505;
+			highScoreText.position.y = 20;
 			stage.addChild(highScoreText);
 			highScoreText.visible = true;
 		}
