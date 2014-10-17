@@ -1,4 +1,12 @@
 /*** Initial Method Called ***/
+var gameStart = true;
+var gameTitle;
+var playText;
+var scoreText;
+var highScoreText;
+var score = 0;
+var highScore = 0;
+
 function init() {
 	console.log("init() successfully called.");
 	// Setup canvas
@@ -22,12 +30,38 @@ function init() {
 	far.tilePosition.y = 20;
 	stage.addChild(far);
 
-  mid = new ScrollingTile("pics/bg-mid.png", -0.1);
-  mid.position.x = 0;
-  mid.position.y = 120;
-  mid.tilePosition.x = 0;
-  mid.tilePosition.y = 0;
-  stage.addChild(mid);
+    mid = new ScrollingTile("pics/bg-mid.png", -0.1);
+    mid.position.x = 0;
+    mid.position.y = 120;
+    mid.tilePosition.x = 0;
+    mid.tilePosition.y = 0;
+    stage.addChild(mid);
+    
+    //GAME MENU && ALL TEXT
+    if(gameStart == true){
+        gameTitle = new PIXI.Text("Time Trooper", {font:"50px Fipps-Regular", fill:"black"});
+        gameTitle.position.x = width / 2;
+        gameTitle.position.y = height / 5;
+        gameTitle.anchor.x = 0.5;
+        gameTitle.anchor.y = 0.5;
+        playText = new PIXI.Text("Press [SPACE] to Start", {font:"35px Fipps-Regular", fill:"black"});
+        playText.position.x = width / 2;
+        playText.position.y = height / 1.27;
+        playText.anchor.x = 0.5;
+        playText.anchor.y = 0.5;
+        scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
+        scoreText.position.x = 30;
+        scoreText.position.y = 505;
+        scoreText.visible = false;
+        highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
+        highScoreText.position.x = 700;
+        highScoreText.position.y = 505;
+        highScoreText.visible = false;
+    stage.addChild(gameTitle);
+    stage.addChild(playText);
+    stage.addChild(scoreText);
+    stage.addChild(highScoreText);
+    }
 
 	/** Setup elements **/
 	player = new Player();
@@ -40,19 +74,19 @@ function init() {
 	for(var i=0; i < GAME_CONSTANTS.bulletAmount; i++){
     bullets.push(new Bullet());
     stage.addChild(bullets[i]);
-  }
-	
-	hitCounter = document.createElement('span');
-	document.body.appendChild( hitCounter );
-	hitCount = 0;
-	hitCounter.innerHTML = hitCount + " hits!"
-	hitCounter.style.position = 'fixed';
-	hitCounter.style.top = '0px';
+    }
 	
 	/** Events **/
 	// Jump
 	KeyboardJS.on('spacebar', function() {
-		player.jump();
+		if(gameStart == false){
+            player.jump();
+        } else {
+            gameStart = false;
+            playText.visible = false;
+            gameTitle.visible = false;
+            scoreText.visible = true;
+        }
 		return false; // prevent default (scrolling)
 	}, function() {
 		player.jumpReleased();
@@ -75,7 +109,8 @@ var dt;
 function draw() {
 	requestAnimationFrame(draw);
 
-	// update dt
+	if(gameStart == false){
+    // update dt
 	now = new Date().getTime(); // ms
 	dt = now - (time||now); // in case first time
 	time = now;
@@ -91,13 +126,39 @@ function draw() {
 			( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 /*anchor*/)) < (bullets[i].height + player.height * 0.8) / 2 ) 
 		) {
 			bullets[i].respawn();
-			hitCount ++;
-			hitCounter.innerHTML = hitCount + " hits!"
+			score = 0;
+            scoreText.visible = false;
+            scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
+            scoreText.position.x = 30;
+            scoreText.position.y = 505;
+            stage.addChild(scoreText);
+            scoreText.visible = true;
 		}
 	}
 	//parallax
 	far.update(dt);
 	mid.update(dt);
+        
+    scoreText.visible = false;
+    score += moddedTime / 10000;
+    score = Math.ceil(score);
+    scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
+    scoreText.position.x = 30;
+    scoreText.position.y = 505;
+    stage.addChild(scoreText);
+    scoreText.visible = true;
+        
+    if(score >= highScore){
+    highScoreText.visible = false;
+    highScore = score;
+    highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
+    highScoreText.position.x = 700;
+    highScoreText.position.y = 505;
+    stage.addChild(highScoreText);
+    highScoreText.visible = true;
+    }
+        
+    }
 	
 	
 	renderer.render(stage);
