@@ -155,8 +155,8 @@ function draw() {
 			}
 		}
 		//parallax
-		far.update(dt);
-		mid.update(dt);
+		far.update(moddedTime);
+		mid.update(moddedTime);
 
 		scoreText.visible = false;
 		score += moddedTime / 10000;
