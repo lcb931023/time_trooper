@@ -10,16 +10,21 @@ By: Changbai, JJ, Mike, Elbin
 	<style>
       body { background-color: #000000; color:#FFF; }
       canvas { background-color: #222222; }
+      @font-face {
+        font-family: "Fipps-Regular";
+        src: url("fonts/Fipps-Regular.otf");
+      }
     </style>
   </head>
-  <body onload="init();">
-  
+  <body onload="load();">
+  	<div style="font-family: Fipps-Regular;color:black;">.</div>
 		<div align="center">
 	    <!--Our canvas, id='game-canvas'-->
 		<h1>Bullet Hell Game</h1>
-		<p>SPACE: Jump</p>
-		<p>CTRL: Slow down time</p>
-		<p>SHIFT: Speed up time</p>
+		<p>W: Jump</p>
+		<p>S: Drop/Slide</p>
+		<p>U: Slow down time</p>
+		<p>I: Speed up time</p>
 		<canvas id="game-canvas" width="960" height="560"></canvas>
 		</div>
 	 
