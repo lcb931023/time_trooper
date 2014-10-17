@@ -1,4 +1,14 @@
-/*** Initial Method Called ***/
+/*** Pre-init ***/
+function load() {
+	var assetsToLoader = [ "pics/avatar.json" ];
+	// create a new loader
+	loader = new PIXI.AssetLoader(assetsToLoader);
+	// use callback
+	loader.onComplete = init
+	//begin load
+	loader.load();
+}
+/*** Initialize Game ***/
 function init() {
 	console.log("init() successfully called.");
 	// Setup canvas
@@ -51,20 +61,26 @@ function init() {
 	
 	/** Events **/
 	// Jump
-	KeyboardJS.on('spacebar', function() {
-		player.jump();
+	KeyboardJS.on('w, up', function() {
+		player.up();
 		return false; // prevent default (scrolling)
 	}, function() {
-		player.jumpReleased();
+		player.upReleased();
 	});
-	stage.mousedown = stage.touchstart = function() { player.jump(); }
-	stage.mouseup = stage.touchend = function() { player.jumpReleased(); }
+	KeyboardJS.on('s, down', function() {
+		player.down();
+		return false; // prevent default (scrolling)
+	}, function() {
+		player.downReleased();
+	});
+	stage.mousedown = stage.touchstart = function() { player.up(); }
+	stage.mouseup = stage.touchend = function() { player.upReleased(); }
 	// Time manipulation
 	timeMod = 1;
 	slowMod = 0.5;
 	fastMod = 2;
-	KeyboardJS.on('shift', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
-	KeyboardJS.on('ctrl', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
+	KeyboardJS.on('i', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
+	KeyboardJS.on('u', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 	
 }
 
