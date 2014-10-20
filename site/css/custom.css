@@ -22,7 +22,7 @@ background: url(../images/carlton.png) no-repeat;
 background-size: cover;
 }
 
-video#ttPlayTest1{
+video#ttPlayTest1,video#ttPlayTest2{
     max-width: 100%;
     margin: 0 auto;
     display: block;
