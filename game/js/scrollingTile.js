@@ -1,6 +1,5 @@
 function ScrollingTile( pTextureURL, pSpeed ) {
-	var texture = PIXI.Texture.fromImage( pTextureURL );
-	PIXI.TilingSprite.call(this, texture, 960, 560);
+	PIXI.TilingSprite.call(this, PIXI.Texture.fromImage( pTextureURL ), 960, 560);
 	this.speed = pSpeed;
 }
 
