@@ -60,6 +60,13 @@ video#ttPlayTest1,video#ttPlayTest2{
 	color: #e75549;
 }
 
+.specialStatement{
+    font-family: "Open Sans", sans-serif;
+	font-size: 1.8em;
+	font-weight: 600;
+	color: #5381ac;
+}
+
 .tagline{
     display: block;
     font-weight: 700;
