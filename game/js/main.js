@@ -2,6 +2,7 @@ var gameStart = true;
 var gameTitle;
 var playText;
 var scoreText;
+var multiplyText;
 var highScoreText;
 var score = 0;
 var highScore = 0;
@@ -62,16 +63,20 @@ function init() {
         playText.anchor.y = 0.5;
         scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
         scoreText.position.x = 30;
-        scoreText.position.y = 20;
+        scoreText.position.y = 0;
         scoreText.visible = false;
+        multiplyText = new PIXI.Text("Multiplier : " , {font:"15px Fipps-Regular", fill:"black"});
+        multiplyText.position.x = 30;
+        multiplyText.position.y = 20;
+        multiplyText.visible = false;
         highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
         highScoreText.position.x = 700;
-        highScoreText.position.y = 20;
+        highScoreText.position.y = 10;
         highScoreText.visible = false;
-    stage.addChild(gameTitle);
-    stage.addChild(playText);
-    stage.addChild(scoreText);
-    stage.addChild(highScoreText);
+        stage.addChild(gameTitle);
+        stage.addChild(playText);
+        stage.addChild(scoreText);
+        stage.addChild(highScoreText);
     }
 
 	/** Setup elements **/
@@ -116,8 +121,8 @@ function init() {
 	timeMod = 1;
 	slowMod = 0.5;
 	fastMod = 2;
-	KeyboardJS.on('i', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
-	KeyboardJS.on('u', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
+	KeyboardJS.on('i, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
+	KeyboardJS.on('u, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 	
 }
 
@@ -149,9 +154,15 @@ function draw() {
 							scoreText.visible = false;
 							scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
 							scoreText.position.x = 30;
-							scoreText.position.y = 20;
+							scoreText.position.y = 0;
 							stage.addChild(scoreText);
 							scoreText.visible = true;
+                            multiplyText.visible = false;
+							multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
+							multiplyText.position.x = 30;
+							multiplyText.position.y = 20;
+							stage.addChild(multiplyText);
+							multiplyText.visible = true;
 			}
 		}
 		//parallax
@@ -163,16 +174,22 @@ function draw() {
 		score = Math.ceil(score);
 		scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
 		scoreText.position.x = 30;
-		scoreText.position.y = 20;
+		scoreText.position.y = 0;
 		stage.addChild(scoreText);
 		scoreText.visible = true;
+        multiplyText.visible = false;
+        multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
+        multiplyText.position.x = 30;
+        multiplyText.position.y = 20;
+        stage.addChild(multiplyText);
+        multiplyText.visible = true;
 
 		if(score >= highScore){
 			highScoreText.visible = false;
 			highScore = score;
 			highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
 			highScoreText.position.x = 700;
-			highScoreText.position.y = 20;
+			highScoreText.position.y = 10;
 			stage.addChild(highScoreText);
 			highScoreText.visible = true;
 		}
