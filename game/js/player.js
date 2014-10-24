@@ -47,8 +47,8 @@ function Player() {
 	this.dY = 0;
 	this.jumpTimer = this.JUMP_TIMER_MAX; // For variable jump height
 	this.runTimer = 0; // For animating running cycle
-  this.slideTimer = 0;
-  this.afterSlideDelay = 0;
+    this.slideTimer = 0;
+    this.afterSlideDelay = 0;
 	this.state = PlayerState.RUN1;
 	this.gotoAndStop(this.state);
 };
