@@ -4,7 +4,6 @@ function Bullet() {
 	
 	this.anchor.x = 0.5;
 	this.anchor.y = 0.5;
-  this.rotation = Math.PI;
 	this.dx = - (Math.random() * .2 + .2);
 	this.position.x = (Math.random()*2000) + 1000;
   this.position.y = (Math.random() * (GAME_CONSTANTS.groundHeight - 30) ) + 30;

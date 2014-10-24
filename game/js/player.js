@@ -25,6 +25,7 @@ function Player() {
 	this.anchor.x = 0.5;
 	this.anchor.y = 1;
 	// Consts
+	this.AOE_RADIUS = 150;
 	this.JUMP_SPEED = -0.6;
 	this.JUMP_TIMER_MAX = 150; //ms. For variable jump height
     this.SLIDE_TIMER_MAX = 2000; //ms. how long slide lasts
@@ -120,6 +121,13 @@ Player.prototype.createDelay = function(pDt) {
             this.doneSliding = false;
     }
 };
+
+Player.prototype.aoeContains = function (pPosition) {			
+	if ( this.position.distance( pPosition ) < this.AOE_RADIUS ) return true;
+	else return false;
+};
+
+/** Control **/
 
 Player.prototype.up = function() {
 	if (this.state == PlayerState.IDLE) {
