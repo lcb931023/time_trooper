@@ -87,6 +87,7 @@ function init() {
         stage.addChild(gameTitle);
         stage.addChild(playText);
         stage.addChild(scoreText);
+				stage.addChild(multiplyText);
         stage.addChild(highScoreText);
     }
 
@@ -111,6 +112,8 @@ function init() {
 			playText.visible = false;
 			gameTitle.visible = false;
 			scoreText.visible = true;
+			multiplyText.visible = true;
+			highScoreText.visible = true;
 		}
 	});
 	// Jump
