@@ -6,6 +6,8 @@ var multiplyText;
 var highScoreText;
 var score = 0;
 var highScore = 0;
+var playerHeart;
+var healthArray = [];
 /*** Pre-init ***/
 function load() {
 	var assetsToLoader = [ "pics/avatar.json" ];
@@ -73,6 +75,15 @@ function init() {
         highScoreText.position.x = 700;
         highScoreText.position.y = 10;
         highScoreText.visible = false;
+        
+        
+        for(i=0; i<=2; i++){
+            healthArray.push(new PIXI.Sprite(PIXI.Texture.fromImage("pics/heart1.png")));
+            healthArray[i].position.x = 380 + (i * 100);
+            healthArray[i].position.y = 30;
+            stage.addChild(healthArray[i]);
+        }
+        
         stage.addChild(gameTitle);
         stage.addChild(playText);
         stage.addChild(scoreText);
@@ -150,19 +161,20 @@ function draw() {
 				( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 /*anchor*/)) < (bullets[i].height + player.height * 0.8) / 2 ) 
 			) {
 				bullets[i].respawn();
+                
 				score = 0;
-							scoreText.visible = false;
-							scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
-							scoreText.position.x = 30;
-							scoreText.position.y = 0;
-							stage.addChild(scoreText);
-							scoreText.visible = true;
-                            multiplyText.visible = false;
-							multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
-							multiplyText.position.x = 30;
-							multiplyText.position.y = 20;
-							stage.addChild(multiplyText);
-							multiplyText.visible = true;
+                scoreText.visible = false;
+                scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
+                scoreText.position.x = 30;
+                scoreText.position.y = 0;
+                stage.addChild(scoreText);
+                scoreText.visible = true;
+                multiplyText.visible = false;
+                multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
+                multiplyText.position.x = 30;
+                multiplyText.position.y = 20;
+                stage.addChild(multiplyText);
+                multiplyText.visible = true;
 			}
 		}
 		//parallax
