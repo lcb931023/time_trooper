@@ -73,7 +73,7 @@ function init() {
         gameTitle.anchor.y = 0.5;
         playText = new PIXI.Text("Press [SPACE] to Start", {font:"35px Fipps-Regular", fill:"black"});
         playText.position.x = width / 2;
-        playText.position.y = height / 1.27;
+        playText.position.y = height / 2.5;
         playText.anchor.x = 0.5;
         playText.anchor.y = 0.5;
         scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
@@ -131,6 +131,7 @@ function init() {
 		player.upReleased();
 	});
 	KeyboardJS.on('s, down', function() {
+        console.log("DOWN");
 		player.down();
 		return false; // prevent default (scrolling)
 	}, function() {
