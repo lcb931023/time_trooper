@@ -6,15 +6,16 @@ var multiplyText;
 var highScoreText;
 var score = 0;
 var highScore = 0;
-var playerHeart;
-var healthArray = [];
+var heart;
+var heartFrames = [];
+
 /*** Pre-init ***/
 function load() {
-	var assetsToLoader = [ "pics/avatar.json" ];
+	var assetsToLoader = [ "pics/avatar.json","pics/heart.json" ];
 	// create a new loader
 	loader = new PIXI.AssetLoader(assetsToLoader);
 	// use callback
-	loader.onComplete = init
+	loader.onComplete = init;
 	//begin load
 	loader.load();
 }
@@ -32,11 +33,11 @@ function init() {
 		height,
 		document.getElementById("game-canvas")
 	);
-	
+    
 	/*** Start updating through draw loop ***/
 	requestAnimationFrame(draw);
     
-  /** PARALLAX **/
+    /** PARALLAX **/
 	far = new ScrollingTile("pics/bg-far.png", -0.04);
 	far.position.x = 0;
 	far.position.y = 0;
@@ -51,8 +52,20 @@ function init() {
     mid.tilePosition.y = 0;
     stage.addChild(mid);
     
+    /** HEART **/
+    for(var i=0; i < 3; i++){
+        var heartTextures = PIXI.Texture.fromFrame("heart" + (i+1) + ".png");
+        heartFrames.push(heartTextures);
+    }
+    
     //GAME MENU && ALL TEXT
     if(gameStart == true){
+        heart = new PIXI.MovieClip(heartFrames);
+        heart.position.x = 450;
+        heart.position.y = 30;
+        heart.visible = false;
+        heart.gotoAndStop(0);
+        
         gameTitle = new PIXI.Text("Time Trooper", {font:"50px Fipps-Regular", fill:"black"});
         gameTitle.position.x = width / 2;
         gameTitle.position.y = height / 5;
@@ -76,19 +89,12 @@ function init() {
         highScoreText.position.y = 10;
         highScoreText.visible = false;
         
-        
-        for(i=0; i<=2; i++){
-            healthArray.push(new PIXI.Sprite(PIXI.Texture.fromImage("pics/heart1.png")));
-            healthArray[i].position.x = 380 + (i * 100);
-            healthArray[i].position.y = 30;
-            stage.addChild(healthArray[i]);
-        }
-        
         stage.addChild(gameTitle);
         stage.addChild(playText);
         stage.addChild(scoreText);
-				stage.addChild(multiplyText);
+        stage.addChild(multiplyText);
         stage.addChild(highScoreText);
+        stage.addChild(heart);
     }
 
 	/** Setup elements **/
@@ -114,6 +120,7 @@ function init() {
 			scoreText.visible = true;
 			multiplyText.visible = true;
 			highScoreText.visible = true;
+            heart.visible = true;
 		}
 	});
 	// Jump
@@ -166,10 +173,21 @@ function draw() {
 			if (
 				( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
 				( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 /*anchor*/)) < (bullets[i].height + player.height * 0.8) / 2 ) 
-			) {
+            ) {
 				bullets[i].respawn();
+                console.log(heart.currentFrame);
+                if(heart.currentFrame == 0){
+                    console.log("Going to frame 1");
+                    heart.gotoAndStop(1);
+                }else if(heart.currentFrame == 1){
+                    console.log("Going to frame 2");
+                    heart.gotoAndStop(2);
+                }else if(heart.currentFrame == 2){
+                    console.log("Going back to start");
+                    heart.gotoAndStop(0);
+                    score = 0;
+                }
                 
-				score = 0;
                 scoreText.setText("Distance : " + score);
                 multiplyText.setText("Multiplier : " + timeMod);
 			}
