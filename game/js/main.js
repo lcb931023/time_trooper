@@ -88,7 +88,7 @@ function init() {
         highScoreText.position.x = 700;
         highScoreText.position.y = 10;
         highScoreText.visible = false;
-        
+
         stage.addChild(gameTitle);
         stage.addChild(playText);
         stage.addChild(scoreText);
@@ -108,7 +108,7 @@ function init() {
 	for(var i=0; i < GAME_CONSTANTS.bulletAmount; i++){
     bullets.push(new Bullet());
     stage.addChild(bullets[i]);
-    }
+  }
 	
 	/** Events **/
 	// Start Game
@@ -141,8 +141,8 @@ function init() {
 	stage.mouseup = stage.touchend = function() { player.upReleased(); }
 	// Time manipulation
 	timeMod = 1;
-	slowMod = 0.5;
-	fastMod = 2;
+	slowMod = 0.7;
+	fastMod = 1.5;
 	KeyboardJS.on('d, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
 	KeyboardJS.on('a, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 	
@@ -162,12 +162,13 @@ function draw() {
 		time = now;
 		// manipulate time
 		var moddedTime = dt * timeMod;
+        var moddedTimeSqr = dt * timeMod * timeMod;
 		// update elements
 		player.update( dt );
 		for(var i=0; i < bullets.length; i++){
 			// Area Time manipulation applied to bullets
-			if (player.aoeContains(bullets[i].position)) bullets[i].update( moddedTime );
-			else bullets[i].update( dt );
+			if (player.aoeContains(bullets[i].position)) bullets[i].update( moddedTimeSqr );
+			else bullets[i].update( moddedTime );
 			// Hit detection. [TODO] This looks ugly. Refactor
 			if (
 				( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
@@ -192,8 +193,8 @@ function draw() {
 			}
 		}
 		//parallax
-		far.update(dt);
-		mid.update(dt);
+		far.update(moddedTime);
+		mid.update(moddedTime);
 
 		score += moddedTime / 10000;
 		score = Math.ceil(score);
