@@ -135,7 +135,7 @@ function draw() {
 
 	if(gameStart == false){
     // update dt
-		now = new Date().getTime(); // ms
+		now = Date().now(); // ms
 		dt = now - (time||now); // in case first time
 		time = now;
 		// manipulate time
@@ -153,47 +153,20 @@ function draw() {
 			) {
 				bullets[i].respawn();
 				score = 0;
-							scoreText.visible = false;
-							scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
-							scoreText.position.x = 30;
-							scoreText.position.y = 0;
-							stage.addChild(scoreText);
-							scoreText.visible = true;
-                            multiplyText.visible = false;
-							multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
-							multiplyText.position.x = 30;
-							multiplyText.position.y = 20;
-							stage.addChild(multiplyText);
-							multiplyText.visible = true;
 			}
 		}
 		//parallax
-		far.update(moddedTime);
-		mid.update(moddedTime);
+		far.update(dt);
+		mid.update(dt);
 
-		scoreText.visible = false;
 		score += moddedTime / 10000;
 		score = Math.ceil(score);
-		scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
-		scoreText.position.x = 30;
-		scoreText.position.y = 0;
-		stage.addChild(scoreText);
-		scoreText.visible = true;
-        multiplyText.visible = false;
-        multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
-        multiplyText.position.x = 30;
-        multiplyText.position.y = 20;
-        stage.addChild(multiplyText);
-        multiplyText.visible = true;
+		scoreText.setText("Distance : " + score);
+		multiplyText.setText("Multiplier : " + timeMod);
 
 		if(score >= highScore){
-			highScoreText.visible = false;
 			highScore = score;
-			highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
-			highScoreText.position.x = 700;
-			highScoreText.position.y = 10;
-			stage.addChild(highScoreText);
-			highScoreText.visible = true;
+			highScore.setText("High Score : " + highScore);
 		}
         
 	}
