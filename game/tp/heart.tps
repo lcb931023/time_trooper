@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.5.2</string>
         <key>fileName</key>
-        <string>/Users/changbaili/Code/time_trooper/game/tp/avatar.tps</string>
+        <string>/Users/changbaili/Code/time_trooper/game/tp/heart.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename>../pics/avatar.png</filename>
+        <filename>../pics/heart.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -145,7 +145,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../pics/avatar.json</filename>
+                <filename>../pics/heart.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -188,12 +188,9 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>avatar-crouch.png</filename>
-            <filename>avatar-jump.png</filename>
-            <filename>avatar-run1.png</filename>
-            <filename>avatar-run2.png</filename>
-            <filename>avatar-run3.png</filename>
-            <filename>avatar-run4.png</filename>
+            <filename>heart1.png</filename>
+            <filename>heart2.png</filename>
+            <filename>heart3.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
