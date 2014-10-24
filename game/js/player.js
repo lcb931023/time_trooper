@@ -27,11 +27,17 @@ function Player() {
 	// Consts
 	this.JUMP_SPEED = -0.6;
 	this.JUMP_TIMER_MAX = 150; //ms. For variable jump height
+    this.SLIDE_TIMER_MAX = 2000; //ms. how long slide lasts
+    this.AFTER_SLIDE_DELAY = 2000;
 	this.DROP_SPEED = 0.006;
 	this.dropping = false;
+    this.doneSliding = false;
+    this.goIntoSlide = false;
 	// Properties
 	this.dY = 0;
 	this.jumpTimer = this.JUMP_TIMER_MAX; // For variable jump height
+    this.slideTimer = 0;
+    this.afterSlideDelay = 0;
 	
 	this.state = PlayerState.IDLE;
 	this.gotoAndStop(PlayerState.IDLE);
@@ -43,20 +49,30 @@ Player.prototype = Object.create(PIXI.MovieClip.prototype);
 Player.prototype.update = function(pDt) {
   switch( this.state ) {
 		case PlayerState.IDLE: {
-			// Do something... or not
+            this.createDelay(pDt);
 			break;
 		}
 		case PlayerState.JUMP: {
 			this.updateJump(pDt);
 			break;
 		}
+          
+        case PlayerState.SLIDE: {
+			this.updateSlide(pDt);
+			break;
+		}
 	}
+    
+    
 };
 
 Player.prototype.updateJump = function(pDt) {
 	// always apply gravity when jumping
 	this.dY += GAME_CONSTANTS.gravity * pDt;
-	if (this.dropping) this.dY += this.DROP_SPEED * pDt;
+	if (this.dropping) {
+        this.dY += this.DROP_SPEED * pDt;
+        this.goIntoSlide = true;
+    }
 	// if still hasn't released, keep accelerating
 	if (this.jumpTimer < this.JUMP_TIMER_MAX) {
 		this.jumpTimer += pDt;
@@ -69,9 +85,40 @@ Player.prototype.updateJump = function(pDt) {
 		this.position.y = GAME_CONSTANTS.groundHeight;
 		this.dY = 0;
 		this.dropping = false;
-		this.state = PlayerState.IDLE;
-		this.gotoAndStop(PlayerState.IDLE);
+        this.doneSliding = false;
+        if(this.goIntoSlide == false){
+            this.state = PlayerState.IDLE;
+		    this.gotoAndStop(PlayerState.IDLE);
+        } else {
+            this.slideTimer = 0;
+            this.state = PlayerState.SLIDE;
+		    this.gotoAndStop(PlayerState.SLIDE);
+            this.goIntoSlide = false;
+        }
 	}
+};
+
+Player.prototype.updateSlide = function(pDt) {
+	
+    // if still hasn't released, keep accelerating
+	if (this.slideTimer < this.SLIDE_TIMER_MAX && this.doneSliding == false) {
+		this.slideTimer += pDt; 
+	} else {
+        this.doneSliding = true;
+        this.afterSlideDelay = 0;
+        this.state = PlayerState.IDLE;
+		this.gotoAndStop(PlayerState.IDLE);
+    }
+};
+
+Player.prototype.createDelay = function(pDt) {
+    
+    if(this.afterSlideDelay < this.AFTER_SLIDE_DELAY && this.doneSliding == true)
+    {
+            this.afterSlideDelay += pDt; 
+    } else {
+            this.doneSliding = false;
+    }
 };
 
 Player.prototype.up = function() {
@@ -80,24 +127,30 @@ Player.prototype.up = function() {
 		this.jumpTimer = 0;
 		this.state = PlayerState.JUMP;
 		this.gotoAndStop(PlayerState.JUMP);
-	}
+	}  else if (this.state == PlayerState.SLIDE) {
+        this.doneSliding = true;
+        // start timing how long user holds the jump button
+		this.jumpTimer = 0;
+		this.state = PlayerState.JUMP;
+		this.gotoAndStop(PlayerState.JUMP);
+    }
 };
 Player.prototype.upReleased = function() {
 	// Stop the timer, stop the upward acceleration
 	this.jumpTimer = this.JUMP_TIMER_MAX;
 };
 
-Player.prototype.down = function() {
+ Player.prototype.down = function() {
 	if (this.state == PlayerState.JUMP) {
 		this.dropping = true;
-	} else if (this.state == PlayerState.IDLE) {
-		this.state = PlayerState.SLIDE;
+	} else if (this.state == PlayerState.IDLE && this.doneSliding == false) {
+        this.slideTimer = 0; 
+        this.state = PlayerState.SLIDE;
 		this.gotoAndStop(PlayerState.SLIDE);
 	}
 };
+
+
 Player.prototype.downReleased = function() {
-	if (this.state == PlayerState.SLIDE) {
-		this.state = PlayerState.IDLE;
-		this.gotoAndStop(PlayerState.IDLE);
-	}
+
 };
