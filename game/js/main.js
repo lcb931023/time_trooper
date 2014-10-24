@@ -135,7 +135,7 @@ function draw() {
 
 	if(gameStart == false){
     // update dt
-		now = Date().now(); // ms
+		now = Date.now(); // ms
 		dt = now - (time||now); // in case first time
 		time = now;
 		// manipulate time
@@ -166,7 +166,7 @@ function draw() {
 
 		if(score >= highScore){
 			highScore = score;
-			highScore.setText("High Score : " + highScore);
+			highScoreText.setText("High Score : " + highScore);
 		}
         
 	}
