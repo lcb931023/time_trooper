@@ -132,8 +132,8 @@ function init() {
 	timeMod = 1;
 	slowMod = 0.5;
 	fastMod = 2;
-	KeyboardJS.on('i, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
-	KeyboardJS.on('u, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
+	KeyboardJS.on('d, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
+	KeyboardJS.on('a, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 	
 }
 
@@ -146,7 +146,7 @@ function draw() {
 
 	if(gameStart == false){
     // update dt
-		now = new Date().getTime(); // ms
+		now = Date.now(); // ms
 		dt = now - (time||now); // in case first time
 		time = now;
 		// manipulate time
@@ -154,7 +154,9 @@ function draw() {
 		// update elements
 		player.update( dt );
 		for(var i=0; i < bullets.length; i++){
-			bullets[i].update( moddedTime );
+			// Area Time manipulation applied to bullets
+			if (player.aoeContains(bullets[i].position)) bullets[i].update( moddedTime );
+			else bullets[i].update( dt );
 			// Hit detection. [TODO] This looks ugly. Refactor
 			if (
 				( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
@@ -163,47 +165,22 @@ function draw() {
 				bullets[i].respawn();
                 
 				score = 0;
-                scoreText.visible = false;
-                scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
-                scoreText.position.x = 30;
-                scoreText.position.y = 0;
-                stage.addChild(scoreText);
-                scoreText.visible = true;
-                multiplyText.visible = false;
-                multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
-                multiplyText.position.x = 30;
-                multiplyText.position.y = 20;
-                stage.addChild(multiplyText);
-                multiplyText.visible = true;
+                scoreText.setText("Distance : " + score);
+                multiplyText.setText("Multiplier : " + timeMod);
 			}
 		}
 		//parallax
-		far.update(moddedTime);
-		mid.update(moddedTime);
+		far.update(dt);
+		mid.update(dt);
 
-		scoreText.visible = false;
 		score += moddedTime / 10000;
 		score = Math.ceil(score);
-		scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
-		scoreText.position.x = 30;
-		scoreText.position.y = 0;
-		stage.addChild(scoreText);
-		scoreText.visible = true;
-        multiplyText.visible = false;
-        multiplyText = new PIXI.Text("Multiplier : " + timeMod, {font:"15px Fipps-Regular", fill:"black"});
-        multiplyText.position.x = 30;
-        multiplyText.position.y = 20;
-        stage.addChild(multiplyText);
-        multiplyText.visible = true;
+		scoreText.setText("Distance : " + score);
+		multiplyText.setText("Multiplier : " + timeMod);
 
 		if(score >= highScore){
-			highScoreText.visible = false;
 			highScore = score;
-			highScoreText = new PIXI.Text("High Score : " + highScore, {font:"15px Fipps-Regular", fill:"black"});
-			highScoreText.position.x = 700;
-			highScoreText.position.y = 10;
-			stage.addChild(highScoreText);
-			highScoreText.visible = true;
+			highScoreText.setText("High Score : " + highScore);
 		}
         
 	}

@@ -30,6 +30,11 @@ By: Changbai, JJ, Mike, Elbin
 
 		<!--Call to pixi.js library-->
 		<script src="pixi.js-master/bin/pixi.dev.js"></script>
+		<!--Replace some PIXI functionalities with Phaser implementations.-->
+		<!--We should've used Phaser. Dammit Wes.-->
+		<script>var Phaser = {};</script>
+		<script src="js/vendor/Phaser/Math.js"></script>
+		<script src="js/vendor/Phaser/Point.js"></script>
 		<script src="js/vendor/keyboard.js"></script>
 		<script src="js/constants.js"></script>
 		<script src="js/player.js"></script>

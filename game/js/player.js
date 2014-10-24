@@ -25,6 +25,7 @@ function Player() {
 	this.anchor.x = 0.5;
 	this.anchor.y = 1;
 	// Consts
+	this.AOE_RADIUS = 150;
 	this.JUMP_SPEED = -0.6;
 	this.JUMP_TIMER_MAX = 150; //ms. For variable jump height
 	this.DROP_SPEED = 0.006;
@@ -74,6 +75,12 @@ Player.prototype.updateJump = function(pDt) {
 	}
 };
 
+Player.prototype.aoeContains = function (pPosition) {			
+	if ( this.position.distance( pPosition ) < this.AOE_RADIUS ) return true;
+	else return false;
+};
+
+/** Control **/
 Player.prototype.up = function() {
 	if (this.state == PlayerState.IDLE) {
 		// start timing how long user holds the jump button
@@ -86,7 +93,6 @@ Player.prototype.upReleased = function() {
 	// Stop the timer, stop the upward acceleration
 	this.jumpTimer = this.JUMP_TIMER_MAX;
 };
-
 Player.prototype.down = function() {
 	if (this.state == PlayerState.JUMP) {
 		this.dropping = true;
