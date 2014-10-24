@@ -77,12 +77,12 @@ function init() {
         highScoreText.visible = false;
         
         
-        for(i=0; i<=2; i++){
+        /*for(i=0; i<=2; i++){
             healthArray.push(new PIXI.Sprite(PIXI.Texture.fromImage("pics/heart1.png")));
             healthArray[i].position.x = 380 + (i * 100);
             healthArray[i].position.y = 30;
             stage.addChild(healthArray[i]);
-        }
+        }*/
         
         stage.addChild(gameTitle);
         stage.addChild(playText);
@@ -102,7 +102,7 @@ function init() {
 	for(var i=0; i < GAME_CONSTANTS.bulletAmount; i++){
     bullets.push(new Bullet());
     stage.addChild(bullets[i]);
-    }
+  }
 	
 	/** Events **/
 	// Start Game
