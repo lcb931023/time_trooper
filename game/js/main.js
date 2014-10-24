@@ -121,8 +121,8 @@ function init() {
 	timeMod = 1;
 	slowMod = 0.5;
 	fastMod = 2;
-	KeyboardJS.on('i, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
-	KeyboardJS.on('u, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
+	KeyboardJS.on('d, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
+	KeyboardJS.on('a, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 	
 }
 
@@ -143,7 +143,9 @@ function draw() {
 		// update elements
 		player.update( dt );
 		for(var i=0; i < bullets.length; i++){
-			bullets[i].update( moddedTime );
+			// Area Time manipulation applied to bullets
+			if (player.aoeContains(bullets[i].position)) bullets[i].update( moddedTime );
+			else bullets[i].update( dt );
 			// Hit detection. [TODO] This looks ugly. Refactor
 			if (
 				( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
