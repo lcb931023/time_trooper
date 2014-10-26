@@ -36,20 +36,13 @@ function Player() {
 	this.AOE_RADIUS = 250; //px
 	this.JUMP_SPEED = -0.6;
 	this.JUMP_TIMER_MAX = 150; //ms. For variable jump height
-  this.SLIDE_TIMER_MAX = 2000; //HOW LONG SLIDE FROM IDLE LASTS
-  this.SLIDE_TIMER_FROM_JUMP_MAX = 500;//HOW LONG SLIDE FROM DROPPING WHILE IN JUMP LASTS
-  this.AFTER_SLIDE_DELAY = 2000;
 	this.DROP_SPEED = 0.006;
 	this.dropping = false;
-  this.doneSliding = false;
-  this.goIntoSlide = false;
-  this.slideFromJump = false;
+    this.downIsPressed = true;
 	// Properties
 	this.dY = 0;
 	this.jumpTimer = this.JUMP_TIMER_MAX; // For variable jump height
 	this.runTimer = 0; // For animating running cycle
-  this.slideTimer = 0;
-  this.afterSlideDelay = 0;
 	this.state = PlayerState.RUN1;
 	this.gotoAndStop(this.state);
 	// For firing
@@ -68,7 +61,6 @@ Player.prototype = Object.create(PIXI.MovieClip.prototype);
 Player.prototype.update = function(pDt) {
   switch( this.state ) {
 		case PlayerState.RUN1:
-			this.createDelay(pDt);
 			this.runTimer += pDt;
 			if (this.runTimer >= this.STEP_FREQ)
 			{
@@ -96,10 +88,13 @@ Player.prototype.update = function(pDt) {
 		case PlayerState.JUMP:
 			this.updateJump(pDt);
 			break;
-    case PlayerState.SLIDE:
-			this.updateSlide(pDt);
-			break;
 	}
+    
+    if(this.downIsPressed == false && this.state == PlayerState.SLIDE){
+        this.state = PlayerState.RUN1;
+        this.downIsPressed = true;
+    }
+    
 	this.updateFiring(pDt);
 	this.gotoAndStop(this.state);
 };
@@ -109,7 +104,6 @@ Player.prototype.updateJump = function(pDt) {
 	this.dY += GAME_CONSTANTS.gravity * pDt;
 	if (this.dropping) {
         this.dY += this.DROP_SPEED * pDt;
-        this.goIntoSlide = true;
     }
 	// if still hasn't released, keep accelerating
 	if (this.jumpTimer < this.JUMP_TIMER_MAX) {
@@ -122,40 +116,18 @@ Player.prototype.updateJump = function(pDt) {
 	if ( this.position.y >= GAME_CONSTANTS.groundHeight ) {
 		this.position.y = GAME_CONSTANTS.groundHeight;
 		this.dY = 0;
-		this.dropping = false;
-		this.doneSliding = false;
-		if(this.goIntoSlide == false){
+        
+        if(this.dropping == false){
 				this.state = PlayerState.RUN1;
 		} else {
-				this.slideTimer = 0;
-				this.slideFromJump = true;
 				this.state = PlayerState.SLIDE;
-				this.goIntoSlide = false;
 		}
+        
+		this.dropping = false;
 	}
-};
-
-Player.prototype.updateSlide = function(pDt) {
-
-    // if still hasn't released, keep accelerating
-	if (this.slideTimer < this.SLIDE_TIMER_MAX && this.doneSliding == false && this.slideFromJump == false) {
-		this.slideTimer += pDt;
-	} else if (this.slideTimer < this.SLIDE_TIMER_FROM_JUMP_MAX && this.doneSliding == false && this.slideFromJump == true) {
-		this.slideTimer += pDt;
-	} else {
-        this.doneSliding = true;
-        this.afterSlideDelay = 0;
-        this.state = PlayerState.RUN1;
-    }
-};
-
-Player.prototype.createDelay = function(pDt) {
-
-    if(this.afterSlideDelay < this.AFTER_SLIDE_DELAY && this.doneSliding == true)
-    {
-            this.afterSlideDelay += pDt;
-    } else {
-            this.doneSliding = false;
+    
+    if(Player.prototype.down() == true){
+        console.log("HELLO");
     }
 };
 
@@ -172,7 +144,6 @@ Player.prototype.up = function() {
 		this.jumpTimer = 0;
 		this.state = PlayerState.JUMP;
 	}  else if (this.state == PlayerState.SLIDE) {
-        this.doneSliding = true;
         // start timing how long user holds the jump button
 		this.jumpTimer = 0;
 		this.state = PlayerState.JUMP;
@@ -184,18 +155,24 @@ Player.prototype.upReleased = function() {
 };
 
  Player.prototype.down = function() {
-	if (this.state == PlayerState.JUMP) {
+	
+     this.downIsPressed = true;
+     
+    if (this.state == PlayerState.JUMP) {
 		this.dropping = true;
-	} else if (this.state == PlayerState.RUN4 && this.doneSliding == false) {
-        this.slideFromJump = false;
-        this.slideTimer = 0;
+	} else {
         this.state = PlayerState.SLIDE;
 	}
 };
 
 
 Player.prototype.downReleased = function() {
-
+    
+    this.downIsPressed = false;
+    
+    if(this.state != PlayerState.JUMP){
+        this.state = PlayerState.RUN1;
+    }
 };
 
 // Shooting frequency control
