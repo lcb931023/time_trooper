@@ -27,30 +27,39 @@ function Player() {
 		PIXI.Texture.fromFrame("avatar-crouch.png")
 	];
 	PIXI.MovieClip.call(this, frames);
-	
+
 	this.anchor.x = 0.5;
 	this.anchor.y = 1;
 	// Consts
+	this.FIRE_RATE = 50; //ms
 	this.STEP_FREQ = 200; //ms
-	this.AOE_RADIUS = 250;
+	this.AOE_RADIUS = 250; //px
 	this.JUMP_SPEED = -0.6;
 	this.JUMP_TIMER_MAX = 150; //ms. For variable jump height
-    this.SLIDE_TIMER_MAX = 2000; //HOW LONG SLIDE FROM IDLE LASTS
-    this.SLIDE_TIMER_FROM_JUMP_MAX = 500;//HOW LONG SLIDE FROM DROPPING WHILE IN JUMP LASTS
-    this.AFTER_SLIDE_DELAY = 2000;
+  this.SLIDE_TIMER_MAX = 2000; //HOW LONG SLIDE FROM IDLE LASTS
+  this.SLIDE_TIMER_FROM_JUMP_MAX = 500;//HOW LONG SLIDE FROM DROPPING WHILE IN JUMP LASTS
+  this.AFTER_SLIDE_DELAY = 2000;
 	this.DROP_SPEED = 0.006;
 	this.dropping = false;
-    this.doneSliding = false;
-    this.goIntoSlide = false;
-    this.slideFromJump = false;
+  this.doneSliding = false;
+  this.goIntoSlide = false;
+  this.slideFromJump = false;
 	// Properties
 	this.dY = 0;
 	this.jumpTimer = this.JUMP_TIMER_MAX; // For variable jump height
 	this.runTimer = 0; // For animating running cycle
-    this.slideTimer = 0;
-    this.afterSlideDelay = 0;
+  this.slideTimer = 0;
+  this.afterSlideDelay = 0;
 	this.state = PlayerState.RUN1;
 	this.gotoAndStop(this.state);
+	// For firing
+	this.fireTimer = 0;
+	this.canShoot = false;
+	this.gunPosX = 34;
+	this.gunPosY = -68;
+	this.gunPosSlideX = 19;
+	this.gunPosSlideY = -40;
+
 };
 
 Player.constructor = Player;
@@ -83,14 +92,15 @@ Player.prototype.update = function(pDt) {
 				this.runTimer = 0;
 				this.state = PlayerState.RUN1;
 			}
-			break;		
-		case PlayerState.JUMP: 
+			break;
+		case PlayerState.JUMP:
 			this.updateJump(pDt);
 			break;
     case PlayerState.SLIDE:
 			this.updateSlide(pDt);
 			break;
 	}
+	this.updateFiring(pDt);
 	this.gotoAndStop(this.state);
 };
 
@@ -126,12 +136,12 @@ Player.prototype.updateJump = function(pDt) {
 };
 
 Player.prototype.updateSlide = function(pDt) {
-	
+
     // if still hasn't released, keep accelerating
 	if (this.slideTimer < this.SLIDE_TIMER_MAX && this.doneSliding == false && this.slideFromJump == false) {
-		this.slideTimer += pDt; 
+		this.slideTimer += pDt;
 	} else if (this.slideTimer < this.SLIDE_TIMER_FROM_JUMP_MAX && this.doneSliding == false && this.slideFromJump == true) {
-		this.slideTimer += pDt; 
+		this.slideTimer += pDt;
 	} else {
         this.doneSliding = true;
         this.afterSlideDelay = 0;
@@ -140,16 +150,16 @@ Player.prototype.updateSlide = function(pDt) {
 };
 
 Player.prototype.createDelay = function(pDt) {
-    
+
     if(this.afterSlideDelay < this.AFTER_SLIDE_DELAY && this.doneSliding == true)
     {
-            this.afterSlideDelay += pDt; 
+            this.afterSlideDelay += pDt;
     } else {
             this.doneSliding = false;
     }
 };
 
-Player.prototype.aoeContains = function (pPosition) {			
+Player.prototype.aoeContains = function (pPosition) {
 	if ( this.position.distance( pPosition ) < this.AOE_RADIUS ) return true;
 	else return false;
 };
@@ -178,7 +188,7 @@ Player.prototype.upReleased = function() {
 		this.dropping = true;
 	} else if (this.state == PlayerState.RUN4 && this.doneSliding == false) {
         this.slideFromJump = false;
-        this.slideTimer = 0; 
+        this.slideTimer = 0;
         this.state = PlayerState.SLIDE;
 	}
 };
@@ -187,3 +197,29 @@ Player.prototype.upReleased = function() {
 Player.prototype.downReleased = function() {
 
 };
+
+// Shooting frequency control
+Player.prototype.updateFiring = function(pDt) {
+	if (!this.canShoot) {
+		this.fireTimer += pDt;
+		if (this.fireTimer >= this.FIRE_RATE) {
+			this.fireTimer = 0;
+			this.canShoot = true;
+		}
+	}
+};
+
+Player.prototype.getGunPos = function() {
+	var tX, tY;
+	tX = this.position.x;
+	tY = this.position.y;
+	if (this.state == PlayerState.SLIDE) {
+		tX += this.gunPosSlideX;
+		tY += this.gunPosSlideY;
+	} else {
+		tX += this.gunPosX;
+		tY += this.gunPosY;
+	}
+
+	return { x:tX, y:tY }
+}
