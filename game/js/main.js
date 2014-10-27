@@ -63,15 +63,24 @@ function init() {
         heart.position.y = 30;
         heart.visible = false;
         heart.gotoAndStop(0);
+        
+        door = new Door("pics/door.png", -0.1);
+        door.position.x = 480;
+        door.position.y = 263;
+        door.anchor.x = 0.5;
+        door.anchor.y = 0.5;
+        
+        stage.addChild(door);
+        
 
         gameTitle = new PIXI.Text("Time Trooper", {font:"50px Fipps-Regular", fill:"black"});
         gameTitle.position.x = GAME_CONSTANTS.gameWidth / 2;
         gameTitle.position.y = GAME_CONSTANTS.gameHeight / 5;
         gameTitle.anchor.x = 0.5;
         gameTitle.anchor.y = 0.5;
-        playText = new PIXI.Text("Press [SPACE] to Start", {font:"35px Fipps-Regular", fill:"black"});
+        playText = new PIXI.Text("Press [ENTER] to Start", {font:"35px Fipps-Regular", fill:"green"});
         playText.position.x = GAME_CONSTANTS.gameWidth / 2;
-        playText.position.y = GAME_CONSTANTS.gameHeight / 2.5;
+        playText.position.y = GAME_CONSTANTS.gameHeight / 1.5;
         playText.anchor.x = 0.5;
         playText.anchor.y = 0.5;
         scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
@@ -105,7 +114,7 @@ function init() {
 
 	/** Events **/
 	// Start Game
-	KeyboardJS.on('spacebar', function() {
+	KeyboardJS.on('enter', function() {
 		if(gameNotStarted){
 			gameNotStarted = false;
 			playText.visible = false;
@@ -207,6 +216,7 @@ function draw() {
 		//parallax
 		far.update(moddedTime);
 		mid.update(moddedTime);
+        door.update(moddedTime);
 
 		score += moddedTime / 10000;
 		score = Math.ceil(score);
