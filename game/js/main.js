@@ -154,7 +154,7 @@ function draw() {
 		time = now;
 		// manipulate time
 		var moddedTime = dt * timeMod;
-    var moddedTimeSqr = dt * timeMod * timeMod;
+        var moddedTimeSqr = dt * timeMod * timeMod;
 		// update elements
 		player.update( dt );
 		// Shoot
