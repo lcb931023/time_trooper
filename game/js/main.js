@@ -72,13 +72,35 @@ function init() {
         
         stage.addChild(door);
         
-
+        //MAIN MENU SCREEN TEXT
         gameTitle = new PIXI.Text("Time Trooper", {font:"50px Fipps-Regular", fill:"black"});
         gameTitle.position.x = GAME_CONSTANTS.gameWidth / 2;
         gameTitle.position.y = GAME_CONSTANTS.gameHeight / 5;
         gameTitle.anchor.x = 0.5;
         gameTitle.anchor.y = 0.5;
-        playText = new PIXI.Text("Press [ENTER] to Start", {font:"35px Fipps-Regular", fill:"green"});
+        upText = new PIXI.Text("Up - Jump", {font:"16px Fipps-Regular", fill:"black"});
+        upText.position.x = GAME_CONSTANTS.gameWidth / 3;
+        upText.position.y = GAME_CONSTANTS.gameHeight / 2.5;
+        upText.anchor.x = 0.5;
+        upText.anchor.y = 0.5;
+        downText = new PIXI.Text("Down - Crouch/Slide", {font:"16px Fipps-Regular", fill:"black"});
+        downText.position.x = GAME_CONSTANTS.gameWidth / 3;
+        downText.position.y = GAME_CONSTANTS.gameHeight / 2;
+        downText.anchor.x = 0.5;
+        downText.anchor.y = 0.5;
+        leftText = new PIXI.Text("Left - Slow Down Time", {font:"16px Fipps-Regular", fill:"black"});
+        leftText.position.x = GAME_CONSTANTS.gameWidth / 1.5;
+        leftText.position.y = GAME_CONSTANTS.gameHeight / 2.5;
+        leftText.anchor.x = 0.5;
+        leftText.anchor.y = 0.5;
+        rightText = new PIXI.Text("Right - Speed Up Time", {font:"16px Fipps-Regular", fill:"black"});
+        rightText.position.x = GAME_CONSTANTS.gameWidth / 1.5;
+        rightText.position.y = GAME_CONSTANTS.gameHeight / 2;
+        rightText.anchor.x = 0.5;
+        rightText.anchor.y = 0.5;
+        
+        //IN GAME TEXT
+        playText = new PIXI.Text("Press [ENTER] to Start", {font:"35px Fipps-Regular", fill:"black"});
         playText.position.x = GAME_CONSTANTS.gameWidth / 2;
         playText.position.y = GAME_CONSTANTS.gameHeight / 1.5;
         playText.anchor.x = 0.5;
@@ -96,8 +118,15 @@ function init() {
         highScoreText.position.y = 10;
         highScoreText.visible = false;
 
+        //MAIN MENU SCREEN TEXT
         stage.addChild(gameTitle);
         stage.addChild(playText);
+        stage.addChild(upText);
+        stage.addChild(downText);
+        stage.addChild(leftText);
+        stage.addChild(rightText);
+        
+        //IN GAME TEXT
         stage.addChild(scoreText);
         stage.addChild(multiplyText);
         stage.addChild(highScoreText);
@@ -119,6 +148,10 @@ function init() {
 			gameNotStarted = false;
 			playText.visible = false;
 			gameTitle.visible = false;
+            upText.visible = false;
+            leftText.visible = false;
+            rightText.visible = false;
+            downText.visible = false;
 			scoreText.visible = true;
 			multiplyText.visible = true;
 			highScoreText.visible = true;
