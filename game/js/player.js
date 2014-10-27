@@ -31,7 +31,7 @@ function Player() {
 	this.anchor.x = 0.5;
 	this.anchor.y = 1;
 	// Consts
-	this.FIRE_RATE = 50; //ms
+	this.FIRE_RATE = 100; //ms
 	this.STEP_FREQ = 200; //ms
 	this.AOE_RADIUS = 150; //px
 	this.JUMP_SPEED = -0.6;

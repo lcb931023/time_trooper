@@ -166,14 +166,14 @@ function init() {
 			gameNotStarted = false;
 			playText.visible = false;
 			gameTitle.visible = false;
-      upText.visible = false;
-      leftText.visible = false;
-      rightText.visible = false;
-      downText.visible = false;
+            upText.visible = false;
+            leftText.visible = false;
+            rightText.visible = false;
+            downText.visible = false;
 			scoreText.visible = true;
 			multiplyText.visible = true;
 			highScoreText.visible = true;
-      heart.visible = true;
+            heart.visible = true;
 		}
 	});
 	// Jump
