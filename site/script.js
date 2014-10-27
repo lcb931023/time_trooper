@@ -1,7 +1,9 @@
 $( document ).ready(function() {
-
     $(document).foundation({});
-
+    var iframe = $("#ttIframe");
+    if(iframe != null){
+        iframe.focus();
+    }
 });
 
 function scrollToElement(selector, time, verticalOffset) {
