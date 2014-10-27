@@ -33,7 +33,7 @@ function Player() {
 	// Consts
 	this.FIRE_RATE = 50; //ms
 	this.STEP_FREQ = 200; //ms
-	this.AOE_RADIUS = 250; //px
+	this.AOE_RADIUS = 150; //px
 	this.JUMP_SPEED = -0.6;
 	this.JUMP_TIMER_MAX = 150; //ms. For variable jump height
 	this.DROP_SPEED = 0.006;
@@ -89,19 +89,19 @@ Player.prototype.update = function(pDt) {
 			this.updateJump(pDt);
 			break;
 	}
-    
+
     if(this.downIsPressed == false && this.state == PlayerState.SLIDE){
         this.state = PlayerState.RUN1;
         this.downIsPressed = true;
     }
-    
+
 	this.updateFiring(pDt);
 	this.gotoAndStop(this.state);
 };
 
 Player.prototype.updateJump = function(pDt) {
 	// always apply gravity when jumping
-	this.dY += GAME_CONSTANTS.gravity * pDt;
+	this.dY += CONST.gravity * pDt;
 	if (this.dropping) {
         this.dY += this.DROP_SPEED * pDt;
     }
@@ -113,19 +113,19 @@ Player.prototype.updateJump = function(pDt) {
 	// update pos
 	this.position.y += this.dY * pDt;
 	// If landed, end jump
-	if ( this.position.y >= GAME_CONSTANTS.groundHeight ) {
-		this.position.y = GAME_CONSTANTS.groundHeight;
+	if ( this.position.y >= CONST.groundHeight ) {
+		this.position.y = CONST.groundHeight;
 		this.dY = 0;
-        
+
         if(this.dropping == false){
 				this.state = PlayerState.RUN1;
 		} else {
 				this.state = PlayerState.SLIDE;
 		}
-        
+
 		this.dropping = false;
 	}
-    
+
     if(Player.prototype.down() == true){
         console.log("HELLO");
     }
@@ -155,9 +155,9 @@ Player.prototype.upReleased = function() {
 };
 
  Player.prototype.down = function() {
-	
+
      this.downIsPressed = true;
-     
+
     if (this.state == PlayerState.JUMP) {
 		this.dropping = true;
 	} else {
@@ -167,9 +167,9 @@ Player.prototype.upReleased = function() {
 
 
 Player.prototype.downReleased = function() {
-    
+
     this.downIsPressed = false;
-    
+
     if(this.state != PlayerState.JUMP){
         this.state = PlayerState.RUN1;
     }

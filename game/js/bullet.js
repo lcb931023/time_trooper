@@ -27,8 +27,8 @@ Bullet.prototype.isOutOfBound = function(pMargin) {
 	if (
 		this.position.x < -pMargin ||
 		this.position.y < -pMargin ||
-		this.position.x > GAME_CONSTANTS.gameWidth + pMargin ||
-		this.position.y > GAME_CONSTANTS.gameHeight + pMargin
+		this.position.x > CONST.gameWidth + pMargin ||
+		this.position.y > CONST.gameHeight + pMargin
 	) {
 		return true;
 	} else {

@@ -27,13 +27,12 @@ function init() {
   stage.addChild( new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png")));
 
 	renderer = PIXI.autoDetectRenderer(
-		GAME_CONSTANTS.gameWidth,
-		GAME_CONSTANTS.gameHeight,
+		CONST.gameWidth,
+		CONST.gameHeight,
 		document.getElementById("game-canvas")
 	);
 
-	/*** Start updating through draw loop ***/
-	requestAnimationFrame(draw);
+	level = new Level();
 
     /** PARALLAX **/
 	far = new ScrollingTile("pics/bg-far.png", -0.04);
@@ -43,7 +42,7 @@ function init() {
 	far.tilePosition.y = 0;
 	stage.addChild(far);
 
-    mid = new ScrollingTile("pics/bg-mid.png", -0.1);
+    mid = new ScrollingTile("pics/bg-mid.png", CONST.scrollingSpeed);
     mid.position.x = 0;
     mid.position.y = 0;
     mid.tilePosition.x = 0;
@@ -65,13 +64,13 @@ function init() {
         heart.gotoAndStop(0);
 
         gameTitle = new PIXI.Text("Time Trooper", {font:"50px Fipps-Regular", fill:"black"});
-        gameTitle.position.x = GAME_CONSTANTS.gameWidth / 2;
-        gameTitle.position.y = GAME_CONSTANTS.gameHeight / 5;
+        gameTitle.position.x = CONST.gameWidth / 2;
+        gameTitle.position.y = CONST.gameHeight / 5;
         gameTitle.anchor.x = 0.5;
         gameTitle.anchor.y = 0.5;
         playText = new PIXI.Text("Press [SPACE] to Start", {font:"35px Fipps-Regular", fill:"black"});
-        playText.position.x = GAME_CONSTANTS.gameWidth / 2;
-        playText.position.y = GAME_CONSTANTS.gameHeight / 2.5;
+        playText.position.x = CONST.gameWidth / 2;
+        playText.position.y = CONST.gameHeight / 2.5;
         playText.anchor.x = 0.5;
         playText.anchor.y = 0.5;
         scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
@@ -98,10 +97,13 @@ function init() {
 	/** Setup elements **/
 	player = new Player();
 	player.position.x = 250;
-	player.position.y = GAME_CONSTANTS.groundHeight;
+	player.position.y = CONST.groundHeight;
 	stage.addChild(player);
 
 	playerBullets = [];
+
+	enemies = [];
+	enemyBullets = [];
 
 	/** Events **/
 	// Start Game
@@ -113,7 +115,7 @@ function init() {
 			scoreText.visible = true;
 			multiplyText.visible = true;
 			highScoreText.visible = true;
-            heart.visible = true;
+      heart.visible = true;
 		}
 	});
 	// Jump
@@ -138,6 +140,8 @@ function init() {
 	KeyboardJS.on('d, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
 	KeyboardJS.on('a, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 
+	/*** Start updating through draw loop ***/
+	requestAnimationFrame(draw);
 }
 
 // Use dt to update animation correctly
@@ -153,56 +157,111 @@ function draw() {
 		dt = now - (time||now); // in case first time
 		time = now;
 		// manipulate time
-		var moddedTime = dt * timeMod;
+		var moddedTime 		= dt * timeMod;
     var moddedTimeSqr = dt * timeMod * timeMod;
+		var moddedTimeEnhanced = dt * timeMod * timeMod * 0.8; // The magical number! #sorrynotsorry
 		// update elements
 		player.update( dt );
-		// Shoot
+		// Player Bullet spawning
 		if (player.canShoot) {
 			playerBullets.push( new Bullet( player.getGunPos().x, player.getGunPos().y,
-																			GAME_CONSTANTS.playerBulletSpeed, 0, 0,
+																			CONST.playerBulletSpeed, 0, 0,
 																			PIXI.Texture.fromImage("pics/playerBullet.png") ) );
 			stage.addChild( playerBullets[playerBullets.length-1] );
 			player.canShoot = false;
 		}
 
+		// Enemies spawning
+		level.update( moddedTime );
+		if (level.canSpawn) {
+			enemies.push( new Enemy(CONST.gameWidth - 30, CONST.enemySpawnCeil + Math.random() * (CONST.enemySpawnBottom - CONST.enemySpawnCeil) ) );
+			stage.addChild( enemies[enemies.length-1] );
+			level.canSpawn = false;
+		}
+
 		// Update player's bullets
-		for (var i=0; i<playerBullets.length; i++){
+		// inverse for loop for splice bug prevention http://stackoverflow.com/questions/9882284/looping-through-array-and-removing-items-without-breaking-for-loop
+		for (var i=playerBullets.length-1; i>=0; i--){
+			var remove = false;
 			playerBullets[i].update(moddedTime);
+			// collision with enemy turrets
+			for (var j=0; j<enemies.length; j++){
+				if (playerBullets[i].position.distance(enemies[j].position) < enemies[j].width) {
+					remove = true;
+					enemies[j].health --;
+				}
+			}
 			// remove if out of bound
 			if (playerBullets[i].isOutOfBound(30)) {
+				remove = true;
+			}
+
+			if (remove) {
 				stage.removeChild(playerBullets[i]);
 				playerBullets.splice(i, 1);
 			}
-			// [TODO] collision with enemy turrets
 		}
 
-/*
-		for(var i=0; i < bullets.length; i++){
-			// Area Time manipulation applied to bullets
-			if (player.aoeContains(bullets[i].position)) bullets[i].update( moddedTimeSqr );
-			else bullets[i].update( moddedTime );
-			// Hit detection. [TODO] This looks ugly. Refactor
-			if (
-				( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
-				( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 )) < (bullets[i].height + player.height * 0.8) / 2 )
-            ) {
-				bullets[i].respawn();
-                console.log(heart.currentFrame);
-                if(heart.currentFrame == 0){
-                    heart.gotoAndStop(1);
-                }else if(heart.currentFrame == 1){
-                    heart.gotoAndStop(2);
-                }else if(heart.currentFrame == 2){
-                    heart.gotoAndStop(0);
-                    score = 0;
-                }
-
-                scoreText.setText("Distance : " + score);
-                multiplyText.setText("Multiplier : " + timeMod);
+		// Update Enemies: Shooting, boundary, and health
+		for (var i=enemies.length-1; i>=0; i--) {
+			var remove = false;
+			enemies[i].update(moddedTime);
+			// bullet spawning
+			if (enemies[i].canShoot) {
+				enemyBullets.push( new Bullet( enemies[i].position.x, enemies[i].position.y,
+																				enemies[i].shootDir.x * CONST.enemyBulletSpeed,
+																				enemies[i].shootDir.y * CONST.enemyBulletSpeed,
+																				CONST.scrollingSpeed,
+																				PIXI.Texture.fromImage("pics/bullet.png") ) );
+				stage.addChild( enemyBullets[enemyBullets.length-1] );
+				enemies[i].canShoot = false;
+			}
+			// boundary
+			if (enemies[i].isOutOfBound(enemies[i].width)) remove = true;
+			// health
+			if (enemies[i].health <= 0) remove = true;
+			// actually remove
+			if (remove) {
+				stage.removeChild(enemies[i]);
+				enemies.splice(i, 1);
 			}
 		}
-		*/
+
+		// Update enemies bullet & check collision
+		for (var i=enemyBullets.length-1; i>=0; i--) {
+			var remove = false;
+			// Area Time manipulation applied to bullets
+			if (player.aoeContains(enemyBullets[i].position)) enemyBullets[i].update( moddedTimeEnhanced );
+			else enemyBullets[i].update( moddedTime );
+			// Hit Detection with player
+			// [Hack] Hard coded solution to provide a feel-good collision with player
+			if (
+				( Math.abs(enemyBullets[i].position.x - player.position.x) < (enemyBullets[i].width + player.width * 0.2) / 2 ) &&
+				( Math.abs(enemyBullets[i].position.y - (player.position.y - player.height/2 )) < (enemyBullets[i].height + player.height * 0.8) / 2 )
+						) {
+				remove = true;
+				if(heart.currentFrame == 0){
+					heart.gotoAndStop(1);
+				}else if(heart.currentFrame == 1){
+					heart.gotoAndStop(2);
+				}else if(heart.currentFrame == 2){
+					// Lose. Reset.
+					heart.gotoAndStop(0);
+					level.reset();
+					score = 0;
+				}
+			}
+			// remove if out of bound
+			if (enemyBullets[i].isOutOfBound(30)) {
+				remove = true;
+			}
+
+			if (remove) {
+				stage.removeChild(enemyBullets[i]);
+				enemyBullets.splice(i, 1);
+			}
+
+		}
 
 		//parallax
 		far.update(moddedTime);
