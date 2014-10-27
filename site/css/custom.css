@@ -33,6 +33,11 @@ video#ttPlayTest1,video#ttPlayTest2{
 	vertical-align: middle;
 }
 
+.centeredIframe{
+    display: block;
+    margin: 0 auto;
+}
+
 #home-page h1{
 	font-family: "Open Sans", sans-serif;
 	font-size: 4.0em;
