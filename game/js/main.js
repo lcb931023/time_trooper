@@ -1,4 +1,4 @@
-var gameStart = true;
+var gameNotStarted = true;
 var gameTitle;
 var playText;
 var scoreText;
@@ -23,20 +23,18 @@ function load() {
 function init() {
 	console.log("init() successfully called.");
 	// Setup canvas
-	var width = document.getElementById("game-canvas").width;
-	var height = document.getElementById("game-canvas").height;
 	stage = new PIXI.Stage("black");
-    stage.addChild( new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png")));
-    
+  stage.addChild( new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png")));
+
 	renderer = PIXI.autoDetectRenderer(
-		width,
-		height,
+		GAME_CONSTANTS.gameWidth,
+		GAME_CONSTANTS.gameHeight,
 		document.getElementById("game-canvas")
 	);
-    
+
 	/*** Start updating through draw loop ***/
 	requestAnimationFrame(draw);
-    
+
     /** PARALLAX **/
 	far = new ScrollingTile("pics/bg-far.png", -0.04);
 	far.position.x = 0;
@@ -51,29 +49,29 @@ function init() {
     mid.tilePosition.x = 0;
     mid.tilePosition.y = 0;
     stage.addChild(mid);
-    
+
     /** HEART **/
     for(var i=0; i < 3; i++){
         var heartTextures = PIXI.Texture.fromFrame("heart" + (i+1) + ".png");
         heartFrames.push(heartTextures);
     }
-    
+
     //GAME MENU && ALL TEXT
-    if(gameStart == true){
+    if(gameNotStarted == true){
         heart = new PIXI.MovieClip(heartFrames);
         heart.position.x = 450;
         heart.position.y = 30;
         heart.visible = false;
         heart.gotoAndStop(0);
-        
+
         gameTitle = new PIXI.Text("Time Trooper", {font:"50px Fipps-Regular", fill:"black"});
-        gameTitle.position.x = width / 2;
-        gameTitle.position.y = height / 5;
+        gameTitle.position.x = GAME_CONSTANTS.gameWidth / 2;
+        gameTitle.position.y = GAME_CONSTANTS.gameHeight / 5;
         gameTitle.anchor.x = 0.5;
         gameTitle.anchor.y = 0.5;
         playText = new PIXI.Text("Press [SPACE] to Start", {font:"35px Fipps-Regular", fill:"black"});
-        playText.position.x = width / 2;
-        playText.position.y = height / 2.5;
+        playText.position.x = GAME_CONSTANTS.gameWidth / 2;
+        playText.position.y = GAME_CONSTANTS.gameHeight / 2.5;
         playText.anchor.x = 0.5;
         playText.anchor.y = 0.5;
         scoreText = new PIXI.Text("Distance : " + score, {font:"15px Fipps-Regular", fill:"black"});
@@ -102,19 +100,14 @@ function init() {
 	player.position.x = 250;
 	player.position.y = GAME_CONSTANTS.groundHeight;
 	stage.addChild(player);
-	
-	bullets = [];
- 	FIRE_RATE = 10; // [TODO]
-	for(var i=0; i < GAME_CONSTANTS.bulletAmount; i++){
-    bullets.push(new Bullet());
-    stage.addChild(bullets[i]);
-  }
-	
+
+	playerBullets = [];
+
 	/** Events **/
 	// Start Game
 	KeyboardJS.on('spacebar', function() {
-		if(gameStart){
-			gameStart = false;
+		if(gameNotStarted){
+			gameNotStarted = false;
 			playText.visible = false;
 			gameTitle.visible = false;
 			scoreText.visible = true;
@@ -131,7 +124,6 @@ function init() {
 		player.upReleased();
 	});
 	KeyboardJS.on('s, down', function() {
-        console.log("DOWN");
 		player.down();
 		return false; // prevent default (scrolling)
 	}, function() {
@@ -145,26 +137,47 @@ function init() {
 	fastMod = 1.5;
 	KeyboardJS.on('d, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
 	KeyboardJS.on('a, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
-	
+
 }
 
-// Use dt to update animation correctly 
+// Use dt to update animation correctly
 var time;
 var now;
 var dt;
 function draw() {
 	requestAnimationFrame(draw);
 
-	if(gameStart == false){
+	if(gameNotStarted == false){
     // update dt
 		now = Date.now(); // ms
 		dt = now - (time||now); // in case first time
 		time = now;
 		// manipulate time
 		var moddedTime = dt * timeMod;
-        var moddedTimeSqr = dt * timeMod * timeMod;
+    var moddedTimeSqr = dt * timeMod * timeMod;
 		// update elements
 		player.update( dt );
+		// Shoot
+		if (player.canShoot) {
+			playerBullets.push( new Bullet( player.getGunPos().x, player.getGunPos().y,
+																			GAME_CONSTANTS.playerBulletSpeed, 0, 0,
+																			PIXI.Texture.fromImage("pics/playerBullet.png") ) );
+			stage.addChild( playerBullets[playerBullets.length-1] );
+			player.canShoot = false;
+		}
+
+		// Update player's bullets
+		for (var i=0; i<playerBullets.length; i++){
+			playerBullets[i].update(moddedTime);
+			// remove if out of bound
+			if (playerBullets[i].isOutOfBound(30)) {
+				stage.removeChild(playerBullets[i]);
+				playerBullets.splice(i, 1);
+			}
+			// [TODO] collision with enemy turrets
+		}
+
+/*
 		for(var i=0; i < bullets.length; i++){
 			// Area Time manipulation applied to bullets
 			if (player.aoeContains(bullets[i].position)) bullets[i].update( moddedTimeSqr );
@@ -172,26 +185,25 @@ function draw() {
 			// Hit detection. [TODO] This looks ugly. Refactor
 			if (
 				( Math.abs(bullets[i].position.x - player.position.x) < (bullets[i].width + player.width * 0.2) / 2 ) &&
-				( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 /*anchor*/)) < (bullets[i].height + player.height * 0.8) / 2 ) 
+				( Math.abs(bullets[i].position.y - (player.position.y - player.height/2 )) < (bullets[i].height + player.height * 0.8) / 2 )
             ) {
 				bullets[i].respawn();
                 console.log(heart.currentFrame);
                 if(heart.currentFrame == 0){
-                    console.log("Going to frame 1");
                     heart.gotoAndStop(1);
                 }else if(heart.currentFrame == 1){
-                    console.log("Going to frame 2");
                     heart.gotoAndStop(2);
                 }else if(heart.currentFrame == 2){
-                    console.log("Going back to start");
                     heart.gotoAndStop(0);
                     score = 0;
                 }
-                
+
                 scoreText.setText("Distance : " + score);
                 multiplyText.setText("Multiplier : " + timeMod);
 			}
 		}
+		*/
+
 		//parallax
 		far.update(moddedTime);
 		mid.update(moddedTime);
@@ -205,8 +217,8 @@ function draw() {
 			highScore = score;
 			highScoreText.setText("High Score : " + highScore);
 		}
-        
+
 	}
-	
+
 	renderer.render(stage);
 }

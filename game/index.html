@@ -1,4 +1,4 @@
-<!-- 
+<!--
 BULLET HELL GAME
 By: Changbai, JJ, Mike, Elbin
 -->
@@ -6,9 +6,9 @@ By: Changbai, JJ, Mike, Elbin
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Bullet Hell Game</title>
+    <title>Time Trooper</title>
 	<style>
-      body { background-color: #000000; color:#FFF; }
+      body { background-color: #000000; color:#FFF;}
       canvas { background-color: #222222; }
       @font-face {
         font-family: "Fipps-Regular";
@@ -17,17 +17,7 @@ By: Changbai, JJ, Mike, Elbin
     </style>
   </head>
   <body onload="load();">
-  	<div style="font-family: Fipps-Regular;color:black;">.</div>
-		<div align="center">
-	    <!--Our canvas, id='game-canvas'-->
-		<h1>Bullet Hell Game</h1>
-		<p>Up: Jump</p>
-		<p>Down: Drop/Slide</p>
-		<p>Left: Slow down time</p>
-		<p>Right: Speed up time</p>
-		<canvas id="game-canvas" width="960" height="560"></canvas>
-		</div>
-
+        <canvas id="game-canvas" width="960" height="560"></canvas>
 		<!--Call to pixi.js library-->
 		<script src="pixi.js-master/bin/pixi.dev.js"></script>
 		<!--Replace some PIXI functionalities with Phaser implementations.-->
@@ -38,9 +28,9 @@ By: Changbai, JJ, Mike, Elbin
 		<script src="js/vendor/keyboard.js"></script>
 		<script src="js/constants.js"></script>
 		<script src="js/player.js"></script>
+        <script src="js/enemy.js"></script>
 		<script src="js/bullet.js"></script>
 		<script src="js/scrollingTile.js"></script>
 		<script src="js/main.js"></script>
-	 
   </body>
 </html>
