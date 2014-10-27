@@ -231,7 +231,7 @@ function draw() {
 		// Enemies spawning
 		level.update( moddedTime );
 		if (level.canSpawn) {
-			enemies.push( new Enemy(CONST.gameWidth - 30, CONST.enemySpawnCeil + Math.random() * (CONST.enemySpawnBottom - CONST.enemySpawnCeil) ) );
+			enemies.push( new Enemy(CONST.gameWidth + 30, CONST.enemySpawnCeil + Math.random() * (CONST.enemySpawnBottom - CONST.enemySpawnCeil) ) );
 			stage.addChild( enemies[enemies.length-1] );
 			level.canSpawn = false;
 		}
