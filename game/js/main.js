@@ -21,10 +21,10 @@ function load() {
 }
 /*** Initialize Game ***/
 function init() {
-	console.log("init() successfully called.");
+	//console.log("init() successfully called.");
 	// Setup canvas
 	stage = new PIXI.Stage("black");
-  stage.addChild( new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png")));
+    stage.addChild( new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png")));
 
 	renderer = PIXI.autoDetectRenderer(
 		GAME_CONSTANTS.gameWidth,
