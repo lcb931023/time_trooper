@@ -8,6 +8,10 @@ var score = 0;
 var highScore = 0;
 var heart;
 var heartFrames = [];
+var closeBlurEffect;
+var farBlurEffect;
+var backgroundBlurEffect;
+var backgroundImage;
 
 /*** Pre-init ***/
 function load() {
@@ -24,7 +28,20 @@ function init() {
 	//console.log("init() successfully called.");
 	// Setup canvas
 	stage = new PIXI.Stage("black");
-    stage.addChild( new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png")));
+    
+    //Create BLURS
+    backgroundBlurEffect = new PIXI.BlurXFilter();
+    closeBlurEffect = new PIXI.BlurXFilter();
+    farBlurEffect = new PIXI.BlurXFilter();
+    backgroundBlurEffect.blur = 0;
+    closeBlurEffect.blur = 0;
+    farBlurEffect.blur = 0;
+    
+    
+    
+    backgroundImage = new PIXI.Sprite(PIXI.Texture.fromImage("pics/background.png"));
+    backgroundImage.filters = [backgroundBlurEffect];
+    stage.addChild(backgroundImage);
 
 	renderer = PIXI.autoDetectRenderer(
 		GAME_CONSTANTS.gameWidth,
@@ -41,6 +58,7 @@ function init() {
 	far.position.y = 0;
 	far.tilePosition.x = 0;
 	far.tilePosition.y = 0;
+    far.filters = [farBlurEffect];
 	stage.addChild(far);
 
     mid = new ScrollingTile("pics/bg-mid.png", -0.1);
@@ -48,6 +66,7 @@ function init() {
     mid.position.y = 0;
     mid.tilePosition.x = 0;
     mid.tilePosition.y = 0;
+    mid.filters = [closeBlurEffect];
     stage.addChild(mid);
 
     /** HEART **/
@@ -137,7 +156,8 @@ function init() {
 	player = new Player();
 	player.position.x = 250;
 	player.position.y = GAME_CONSTANTS.groundHeight;
-	stage.addChild(player);
+    
+    stage.addChild(player);
 
 	playerBullets = [];
 
@@ -177,7 +197,7 @@ function init() {
 	timeMod = 1;
 	slowMod = 0.7;
 	fastMod = 1.5;
-	KeyboardJS.on('d, right', function(){ timeMod = fastMod; }, function(){ timeMod = 1; });
+	KeyboardJS.on('d, right', function(){ timeMod = fastMod; backgroundBlurEffect.blur = 2; farBlurEffect.blur = 7; closeBlurEffect.blur = 17; }, function(){ timeMod = 1; backgroundBlurEffect.blur = 0; farBlurEffect.blur = 0; closeBlurEffect.blur = 0; });
 	KeyboardJS.on('a, left', function(){ timeMod = slowMod; return false; }, function(){ timeMod = 1; return false; });
 
 }
